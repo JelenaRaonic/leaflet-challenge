@@ -12,7 +12,7 @@ let myMap = L.map("map", {
 
 /// API 
 // Store our API endpoint as queryUrl.
-let queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson",
+let queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
 /// DATA LOADING for EARTHQUAKE
 // Perform a GET request to the query URL/
@@ -49,9 +49,9 @@ function createFeatures(earthquakeData) {
   // Give each feature a popup that describes the place,time and date, magnitude and depth of the earthquake.
   function onEachFeature(feature, layer) {
     layer.bindPopup(`<h3>Place: ${feature.properties.place}</h3><hr />
-                     <h3>Time and date: ${new Date(feature.properties.time)}</h2><hr />
-                     <h3>Magnitude: ${new Date(feature.properties.mag)}</h2><hr />
-                     <h3>Depth: ${new Date(feature.geometry.coordinates[2])}</h2>/>
+                     <h3>Time and date: ${new Date(feature.properties.time)}</h3><hr />
+                     <h3>Magnitude: ${(feature.properties.mag)}</h3><hr />
+                     <h3>Depth: ${(feature.geometry.coordinates[2])}</h3>/>
                      `);
   }
 
@@ -67,9 +67,9 @@ function createFeatures(earthquakeData) {
             var markers = {
                 radius: circleSize(feature.properties.mag),
                 fillColor: getcolor(feature.geometry.coordinates[2]),
-                color = "black",
-                weight = 1,
-                opacity = 1,
+                color: "black",
+                weight: 1,
+                opacity: 1,
                 fillOpacity : 0.8
             }
 
@@ -78,7 +78,7 @@ function createFeatures(earthquakeData) {
 
       });
       // Send our earthquakes layer to the createMap function/
-    createMap(earthquakes);
+    //createMap(earthquakes);
 }
 
 
@@ -98,11 +98,12 @@ legend.onAdd = function(myMap) {
   
   var grades = [0,1,2,3,4,5];
   var colors  = ["#F0F8FF", "#00FFFF","#6495ED", "#00008B", "#483D8B", "#191970"];
+  
 
   //loop throught the grades 
   for (var i=0; i<grades.length; i++){
     div.innerHTML += 
-    '<i style = "background:' + getColor(grade[i]+1) + '"></i>' + grades[i] + (grades[i+1] ? '&ndash;' + grades[i+1]+'<br>': '+');
+    '<i style = "background:' + getcolor(grades[i]) + '"></i>' + grades[i] + (grades[i+1] ? '&ndash;' + grades[i+1]+'<br>': '+');
   }
   return div;
 };
