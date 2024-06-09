@@ -1,15 +1,3 @@
-// CREATE A MAP OBJECT.
-let myMap = L.map("map", {
-    center: [37.09, -95.71],
-    zoom: 5
-  });
-  
-  // ADD A TILE LAYER (background map image)
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(myMap);
-
-
 /// API 
 // Store our API endpoint as queryUrl.
 let queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
@@ -21,6 +9,41 @@ d3.json(queryUrl).then(function (data) {
   // Once we get a response, send the data.features object to the createFeatures function.
   createFeatures(data.features);
 });
+
+// CREATE A MAP OBJECT.
+let myMap = L.map("map", {
+    center: [37.09, -75.71],
+    zoom: 5,
+    //layers: [street, earthquakes]
+  });
+  
+  
+  // ADD A TILE LAYER (background map image)
+let street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(myMap);
+  
+let topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+  }).addTo(myMap);
+
+  // Create a baseMaps object.
+  let baseMaps = {
+    "Street Map": street,
+    "Topographic Map": topo
+  };
+
+  // Create an overlay object to hold our overlay.
+  let overlayMaps = {
+    Earthquakes: earthquakes
+  };
+
+  // Create a layer control.
+  // Pass it our baseMaps and overlayMaps.
+  // Add the layer control to the map.
+  L.control.layers(baseMaps, overlayMaps, {
+    collapsed: false
+  }).addTo(myMap);
 
 //FUNCTION 
 //to determine circle size and transforming negative values to positive with absolute value
@@ -80,14 +103,6 @@ function createFeatures(earthquakeData) {
       // Send our earthquakes layer to the createMap function/
     //createMap(earthquakes);
 }
-
-
-// Should I do function createMap(earthquakes)  where I create Map object + tile layer
-// should I create layer control and pass it to Map object and add layer control on map 
-// l.control.layer
-
-
-
 
 
 //Create a legend that will provide context for map data
