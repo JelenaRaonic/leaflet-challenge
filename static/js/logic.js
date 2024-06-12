@@ -12,8 +12,8 @@ d3.json(queryUrl).then(function (data) {
 
 // CREATE A MAP OBJECT.
 let myMap = L.map("map", {
-    center: [37.09, -75.71],
-    zoom: 5,
+    center: [37.09, -122.71],
+    zoom: 3,
     //layers: [street, earthquakes]
   });
   
@@ -25,24 +25,6 @@ let street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   
 let topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-  }).addTo(myMap);
-
-  // Create a baseMaps object.
-  let baseMaps = {
-    "Street Map": street,
-    "Topographic Map": topo
-  };
-
-  // Create an overlay object to hold our overlay.
-  let overlayMaps = {
-    Earthquakes: earthquakes
-  };
-
-  // Create a layer control.
-  // Pass it our baseMaps and overlayMaps.
-  // Add the layer control to the map.
-  L.control.layers(baseMaps, overlayMaps, {
-    collapsed: false
   }).addTo(myMap);
 
 //FUNCTION 
@@ -57,12 +39,12 @@ function getRadius(magnitude){
 
 //determine a color
 function getcolor(depth){
-    if (depth<= 10) return "#F0F8FF";
-    else if (depth<=30) return "#00FFFF";
-    else if (depth<=50) return "#6495ED";
-    else if (depth<=70) return "#00008B";
-    else if (depth<=90) return "#483D8B";
-    else return "#191970";
+    if (depth<= 10) return "#F8B195";
+    else if (depth<=30) return "#F67280";
+    else if (depth<=50) return "#C06C84";
+    else if (depth<=70) return "#6C5B7B";
+    else if (depth<=90) return "#4B3B59";
+    else return "black";
 };
 
 // popups that provide additional information about the earthquake when its associated marker is clicked.
@@ -80,7 +62,6 @@ function createFeatures(earthquakeData) {
 
 
     // Create GeoJSON layer group
-    
     var earthquakes = L.geoJSON(earthquakeData, {
         onEachFeature: onEachFeature,
 
@@ -100,35 +81,32 @@ function createFeatures(earthquakeData) {
         }
 
       });
-      // Send our earthquakes layer to the createMap function/
-    //createMap(earthquakes);
+
+      earthquakes.addTo(myMap);
+    
 }
 
 
 //Create a legend that will provide context for map data
-// Set up the legend.
-var legend = L.control({ position: "bottomright" });
-legend.onAdd = function(myMap) {
-  var div = L.DomUtil.create("div", "info legend");
-  
-  var grades = [0,1,2,3,4,5];
-  var colors  = ["#F0F8FF", "#00FFFF","#6495ED", "#00008B", "#483D8B", "#191970"];
-  
+ // Set up the legend.
+ var legend = L.control({ position: "bottomleft" });
 
-  //loop throught the grades 
-  for (var i=0; i<grades.length; i++){
-    div.innerHTML += 
-    '<i style = "background:' + getcolor(grades[i]) + '"></i>' + grades[i] + (grades[i+1] ? '&ndash;' + grades[i+1]+'<br>': '+');
-  }
-  return div;
-};
+ legend.onAdd = function(myMap) {
+     var div = L.DomUtil.create("div", "info legend");
+     var grades = [0, 10, 30, 50, 70, 90];
+     var colors = ["#F8B195", "#F67280", "#C06C84", "#6C5B7B", "#4B3B59", "black"];
+   
+     // Loop through the grades and create a label with a colored square for each interval
+     for (var i = 0; i < grades.length; i++) {
+         div.innerHTML +=
+             '<i style="background:' + colors[i] + '"></i> ' +
+             grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+     }
+     return div;
+ };
 
-//Add legend to the map
-legend.addTo(myMap);
-
-
-
-
+ // Add legend to the map
+ legend.addTo(myMap);
 
 
 
